@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)https://leimao.github.io/blog/RL-On-Policy-VS-Off-Policy/ -->
+<html class=" js no-touch rgba hsla textshadow opacity svg" lang="en" style=""><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style type="text/css">
+	    .article-wrap img{border-radius: 5px;}
+		.titled-image figure{text-align: center;}
+	</style>
+	
+<title>Lei Mao's Log Book  – On-Policy VS Off-Policy in Reinforcement Learning </title>
+<meta name="description" content="">
+<meta name="keywords" content="Reinforcement Learning">
+<!-- Twitter Cards -->
+	
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:image" content="https://leimao.github.io/images/">
+	
+	<meta name="twitter:title" content="On-Policy VS Off-Policy in Reinforcement Learning">
+	<meta name="twitter:description" content="Hello Underworld.">
+	<meta name="twitter:creator" content="@matchaleimao">
+
+
+
+
+<!-- MathJax -->
+<div class="fit-vids-style" id="fit-vids-style" style="display: none;">­<style>.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style></div><script async="" src="https://www.google-analytics.com/analytics.js"></script><script type="text/x-mathjax-config;executed=true">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+<!--<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>-->
+<!--https://www.mathjax.org/cdn-shutting-down/-->
+<script src="./Lei Mao&#39;s Log Book – On-Policy VS Off-Policy in Reinforcement Learning_files/MathJax.js"></script>
+
+
+<!--Google AdSense-->
+<!--<script data-ad-client="ca-pub-8940628453633310" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="On-Policy VS Off-Policy in Reinforcement Learning">
+<meta property="og:description" content="Hello Underworld.">
+<meta property="og:url" content="https://leimao.github.io/blog/RL-On-Policy-VS-Off-Policy/">
+<meta property="og:site_name" content="Lei Mao&#39;s Log Book">
+
+<!-- Webmaster Tools verfication -->
+<meta name="google-site-verification" content="KFWZJ6GsxCUxQRDDrkkQJ2jgRDVUdgUbTMXXltDss84">
+
+
+
+<link rel="canonical" href="https://leimao.github.io/blog/RL-On-Policy-VS-Off-Policy/">
+<link href="https://leimao.github.io/feed.xml" type="application/atom+xml" rel="alternate" title="Lei Mao&#39;s Log Book Feed">
+
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Google Webfonts -->
+<link href="./Lei Mao&#39;s Log Book – On-Policy VS Off-Policy in Reinforcement Learning_files/css" rel="stylesheet" type="text/css">
+<!-- For all browsers -->
+<link rel="stylesheet" href="./Lei Mao&#39;s Log Book – On-Policy VS Off-Policy in Reinforcement Learning_files/main.min.css">
+<link rel="stylesheet" href="./Lei Mao&#39;s Log Book – On-Policy VS Off-Policy in Reinforcement Learning_files/academicons.css">
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- HTML5 Shiv and Media Query Support -->
+<!--[if lt IE 9]>
+	<script src="https://leimao.github.io/assets/js/vendor/html5shiv.min.js"></script>
+	<script src="https://leimao.github.io/assets/js/vendor/respond.min.js"></script>
+<![endif]-->
+
+<!-- Modernizr -->
+<script src="./Lei Mao&#39;s Log Book – On-Policy VS Off-Policy in Reinforcement Learning_files/modernizr-2.7.1.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"> -->
+<!-- <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png"> -->
+<!-- <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"> -->
+
+<!-- <link rel="shortcut icon" href="https://leimao.github.io/favicon.ico"> -->
+<!-- <link rel="shortcut icon" href="https://leimao.github.io/favicon.png"> -->
+
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<!-- <link rel="apple-touch-icon-precomposed" sizes="192x192" href="https://leimao.github.io/images/apple-icon-precomposed.png"> -->
+
+<!-- https://favicon.io/favicon-converter/ -->
+<link rel="apple-touch-icon" sizes="180x180" href="https://leimao.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://leimao.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://leimao.github.io/favicon-16x16.png">
+<link rel="manifest" href="https://leimao.github.io/site.webmanifest">
+<script type="text/javascript" async="" src="https://leimao-github-io.disqus.com/embed.js"></script><script async="" type="text/javascript" src="https://leimao-github-io.disqus.com/count.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style type="text/css">.MathJax_Display {text-align: center; margin: 1em 0em; position: relative; display: block!important; text-indent: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; width: 100%}
+.MathJax .merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MathJax .MJX-monospace {font-family: monospace}
+.MathJax .MJX-sans-serif {font-family: sans-serif}
+#MathJax_Tooltip {background-color: InfoBackground; color: InfoText; border: 1px solid black; box-shadow: 2px 2px 5px #AAAAAA; -webkit-box-shadow: 2px 2px 5px #AAAAAA; -moz-box-shadow: 2px 2px 5px #AAAAAA; -khtml-box-shadow: 2px 2px 5px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true'); padding: 3px 4px; z-index: 401; position: absolute; left: 0; top: 0; width: auto; height: auto; display: none}
+.MathJax {display: inline; font-style: normal; font-weight: normal; line-height: normal; font-size: 100%; font-size-adjust: none; text-indent: 0; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0; min-height: 0; border: 0; padding: 0; margin: 0}
+.MathJax:focus, body :focus .MathJax {display: inline-table}
+.MathJax.MathJax_FullWidth {text-align: center; display: table-cell!important; width: 10000em!important}
+.MathJax img, .MathJax nobr, .MathJax a {border: 0; padding: 0; margin: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+img.MathJax_strut {border: 0!important; padding: 0!important; margin: 0!important; vertical-align: 0!important}
+.MathJax span {display: inline; position: static; border: 0; padding: 0; margin: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+.MathJax nobr {white-space: nowrap!important}
+.MathJax img {display: inline!important; float: none!important}
+.MathJax * {transition: none; -webkit-transition: none; -moz-transition: none; -ms-transition: none; -o-transition: none}
+.MathJax_Processing {visibility: hidden; position: fixed; width: 0; height: 0; overflow: hidden}
+.MathJax_Processed {display: none!important}
+.MathJax_ExBox {display: block!important; overflow: hidden; width: 1px; height: 60ex; min-height: 0; max-height: none}
+.MathJax .MathJax_EmBox {display: block!important; overflow: hidden; width: 1px; height: 60em; min-height: 0; max-height: none}
+.MathJax_LineBox {display: table!important}
+.MathJax_LineBox span {display: table-cell!important; width: 10000em!important; min-width: 0; max-width: none; padding: 0; border: 0; margin: 0}
+.MathJax .MathJax_HitBox {cursor: text; background: white; opacity: 0; filter: alpha(opacity=0)}
+.MathJax .MathJax_HitBox * {filter: none; opacity: 1; background: transparent}
+#MathJax_Tooltip * {filter: none; opacity: 1; background: transparent}
+@font-face {font-family: MathJax_Blank; src: url('about:blank')}
+.MathJax .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head>
+
+<body class="post"><div style="visibility: hidden; overflow: hidden; position: absolute; top: 0px; height: 1px; width: auto; padding: 0px; border: 0px; margin: 0px; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal;"><div id="MathJax_Hidden"></div></div><div id="MathJax_Message" style="display: none;"></div>
+
+<!--[if lt IE 9]><div class="browser-upgrade alert alert-info">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</div><![endif]-->
+
+<div class="navigation-wrapper">
+	<div class="site-name">
+		<a href="https://leimao.github.io/">Lei Mao's Log Book</a>
+	</div><!-- /.site-name -->
+	<div class="top-navigation">
+		<nav role="navigation" id="site-nav" class="nav"><button type="button" role="button" id="menutoggle" class="navtoogle navicon-lines-button x" aria-hidden="true"><span class="navicon-lines"></span>menu</button>
+		    <ul>
+		        
+				<li><a href="https://leimao.github.io/cv/">Curriculum</a></li>
+		        
+				<li><a href="https://leimao.github.io/blog/">Blog</a></li>
+		        
+				<li><a href="https://leimao.github.io/article/">Articles</a></li>
+		        
+				<li><a href="https://leimao.github.io/project/">Projects</a></li>
+		        
+				<li><a href="https://leimao.github.io/reading/">Readings</a></li>
+		        
+				<li><a href="https://leimao.github.io/publication/">Publications</a></li>
+		        
+				<li><a href="https://leimao.github.io/miscellaneous/">Miscellaneous</a></li>
+		        
+		    </ul>
+		</nav>
+	</div><!-- /.top-navigation -->
+</div><!-- /.navigation-wrapper -->
+
+
+
+<div id="main" role="main">
+  <div class="article-author-side">
+    
+	<img src="./Lei Mao&#39;s Log Book – On-Policy VS Off-Policy in Reinforcement Learning_files/Lei-Bio-Medium.jpg" class="bio-photo" alt="Lei Mao bio photo">
+
+<h3>Lei Mao</h3>
+<p>Machine Learning, Artificial Intelligence, Computer Science.</p>
+<a href="http://twitter.com/matchaleimao" class="author-social" target="_blank"><i class="fa fa-twitter-square"></i> Twitter</a>
+
+<a href="http://facebook.com/dukeleimao" class="author-social" target="_blank"><i class="fa fa-facebook-square"></i> Facebook</a>
+<a href="http://linkedin.com/in/lei-mao" class="author-social" target="_blank"><i class="fa fa-linkedin-square"></i> LinkedIn</a>
+
+
+<a href="http://github.com/leimao" class="author-social" target="_blank"><i class="fa fa-github-square"></i> GitHub</a>
+<a href="http://scholar.google.com/citations?user=R2VUf7YAAAAJ" class="author-social" target="_blank"><i class="ai ai-google-scholar-square"></i>&nbsp; G. Scholar</a>
+
+
+
+
+
+
+<a href="mailto:dukeleimao@gmail.com" class="author-social" target="_blank"><i class="fa fa-envelope-square"></i> E-Mail</a>
+
+<a href="https://leimao.github.io/feed.xml" class="author-social" target="_blank"><i class="fa fa-rss-square"></i> RSS</a>
+  </div>
+  <article>
+    <div class="headline-wrap">
+      
+        <h1><a href="https://leimao.github.io/blog/RL-On-Policy-VS-Off-Policy/" rel="bookmark" title="On-Policy VS Off-Policy in Reinforcement Learning">On-Policy VS Off-Policy in Reinforcement Learning</a></h1>
+      
+    </div><!--/ .headline-wrap -->
+    <div class="article-wrap">
+      <h3 id="introduction">Introduction</h3>
+
+<p>I have not been working on reinforcement learning for a while, and it seems that I could not remember what do on-policy and off-policy mean in reinforcement learning and what the difference is between these two. Most of explanations online bluff too much and I don’t think those are directly answering the questions.</p>
+
+<p><br></p>
+
+<p>I also do have to apologize that I have taken several good images from Sutton’s latest book “Reinforcement Learning: An Introduction” 2nd Edition.</p>
+
+<h3 id="algorithms">Algorithms</h3>
+
+<p>Let us review a typical off-policy algorithm Q-Learning and a typical on-policy algorithm SARSA first.</p>
+
+<h4 id="q-learning">Q-Learning</h4>
+
+<div class="titled-image">
+<figure class="titled-image">
+    <img src="./Lei Mao&#39;s Log Book – On-Policy VS Off-Policy in Reinforcement Learning_files/q-learning.png">
+    <figcaption>Q-Learning</figcaption>
+</figure>
+</div>
+
+<h4 id="sarsa">SARSA</h4>
+
+<div class="titled-image">
+<figure class="titled-image">
+    <img src="./Lei Mao&#39;s Log Book – On-Policy VS Off-Policy in Reinforcement Learning_files/sarsa.png">
+    <figcaption>SARSA</figcaption>
+</figure>
+</div>
+
+<h3 id="off-policy-vs-on-policy">Off-Policy VS On-Policy</h3>
+
+<p>We can see that the major difference is that Q-Learning is using</p>
+
+<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax_Error" id="MathJax-Element-1-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;block&quot;&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;S&lt;/mi&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;A&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo stretchy=&quot;false&quot;&gt;&amp;#x2190;&lt;/mo&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;S&lt;/mi&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;A&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mi&gt;&amp;#x03B1;&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;[&lt;/mo&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mi&gt;&amp;#x03B3;&lt;/mi&gt;&lt;msub&gt;&lt;mtext&gt;max&lt;/mtext&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;msup&gt;&lt;mi&gt;S&lt;/mi&gt;&lt;mo&gt;&amp;#x2032;&lt;/mo&gt;&lt;/msup&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;S&lt;/mi&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;A&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo stretchy=&quot;false&quot;&gt;]&lt;/mo&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><span aria-hidden="true">[Math Processing Error]</span><span class="MJX_Assistive_MathML MJX_Assistive_MathML_Block" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>Q</mi><mo stretchy="false">(</mo><mi>S</mi><mo>,</mo><mi>A</mi><mo stretchy="false">)</mo><mo stretchy="false">←</mo><mi>Q</mi><mo stretchy="false">(</mo><mi>S</mi><mo>,</mo><mi>A</mi><mo stretchy="false">)</mo><mo>+</mo><mi>α</mi><mo stretchy="false">[</mo><mi>R</mi><mo>+</mo><mi>γ</mi><msub><mtext>max</mtext><mrow class="MJX-TeXAtom-ORD"><mi>a</mi></mrow></msub><mi>Q</mi><mo stretchy="false">(</mo><msup><mi>S</mi><mo>′</mo></msup><mo>,</mo><mi>a</mi><mo stretchy="false">)</mo><mo>−</mo><mi>Q</mi><mo stretchy="false">(</mo><mi>S</mi><mo>,</mo><mi>A</mi><mo stretchy="false">)</mo><mo stretchy="false">]</mo></math></span></span><script type="math/tex; mode=display" id="MathJax-Element-1">Q(S,A) \leftarrow Q(S,A) + \alpha [R + \gamma \text{max}_{a} Q(S',a) - Q(S,A)]</script>
+
+<p>to update Q value. While SARSA is using</p>
+
+<span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax_Error" id="MathJax-Element-2-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot; display=&quot;block&quot;&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;S&lt;/mi&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;A&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo stretchy=&quot;false&quot;&gt;&amp;#x2190;&lt;/mo&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;S&lt;/mi&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;A&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mi&gt;&amp;#x03B1;&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;[&lt;/mo&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mi&gt;&amp;#x03B3;&lt;/mi&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;msup&gt;&lt;mi&gt;S&lt;/mi&gt;&lt;mo&gt;&amp;#x2032;&lt;/mo&gt;&lt;/msup&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;msup&gt;&lt;mi&gt;A&lt;/mi&gt;&lt;mo&gt;&amp;#x2032;&lt;/mo&gt;&lt;/msup&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mi&gt;Q&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;S&lt;/mi&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;A&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;mo stretchy=&quot;false&quot;&gt;]&lt;/mo&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><span aria-hidden="true">[Math Processing Error]</span><span class="MJX_Assistive_MathML MJX_Assistive_MathML_Block" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>Q</mi><mo stretchy="false">(</mo><mi>S</mi><mo>,</mo><mi>A</mi><mo stretchy="false">)</mo><mo stretchy="false">←</mo><mi>Q</mi><mo stretchy="false">(</mo><mi>S</mi><mo>,</mo><mi>A</mi><mo stretchy="false">)</mo><mo>+</mo><mi>α</mi><mo stretchy="false">[</mo><mi>R</mi><mo>+</mo><mi>γ</mi><mi>Q</mi><mo stretchy="false">(</mo><msup><mi>S</mi><mo>′</mo></msup><mo>,</mo><msup><mi>A</mi><mo>′</mo></msup><mo stretchy="false">)</mo><mo>−</mo><mi>Q</mi><mo stretchy="false">(</mo><mi>S</mi><mo>,</mo><mi>A</mi><mo stretchy="false">)</mo><mo stretchy="false">]</mo></math></span></span><script type="math/tex; mode=display" id="MathJax-Element-2">Q(S,A) \leftarrow Q(S,A) + \alpha [R + \gamma Q(S',A') - Q(S,A)]</script>
+
+<p>to update Q value.</p>
+
+<p><br></p>
+
+<p>Let us introduce two concepts first: update policy and behavior policy.</p>
+
+<p><br></p>
+
+<p>Update policy is how your agent learns the optimal policy, and behavior policy is how your behaves.</p>
+
+<p><br></p>
+
+<p>In Q-Learning, the agent learns optimal policy using absolute greedy policy and behaves using other policies such as <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax_Error" id="MathJax-Element-3-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;&amp;#x03F5;&lt;/mi&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><span aria-hidden="true">[Math Processing Error]</span><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϵ</mi></math></span></span><script type="math/tex" id="MathJax-Element-3">\epsilon</script>-greedy policy. Because the update policy is different from the behavior policy, so Q-Learning is off-policy.</p>
+
+<p><br></p>
+
+<p>In SARSA, the agent learns optimal policy and behaves using the same policy such as <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax_Error" id="MathJax-Element-4-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;&amp;#x03F5;&lt;/mi&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><span aria-hidden="true">[Math Processing Error]</span><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϵ</mi></math></span></span><script type="math/tex" id="MathJax-Element-4">\epsilon</script>-greedy policy. Because the update policy is the same as the behavior policy, so SARSA is on-policy.</p>
+
+<h3 id="cliff-walking-game">Cliff Walking Game</h3>
+
+<p>I took the Cliff Walking game from Sutton’s book. It seems that Q-Learning with <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax_Error" id="MathJax-Element-5-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;&amp;#x03F5;&lt;/mi&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><span aria-hidden="true">[Math Processing Error]</span><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϵ</mi></math></span></span><script type="math/tex" id="MathJax-Element-5">\epsilon</script>-greedy action learns the value for optimal policy but sometimes it will fall off due to <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax_Error" id="MathJax-Element-6-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;&amp;#x03F5;&lt;/mi&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><span aria-hidden="true">[Math Processing Error]</span><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϵ</mi></math></span></span><script type="math/tex" id="MathJax-Element-6">\epsilon</script>-greedy action. SARSA with <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax_Error" id="MathJax-Element-7-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;&amp;#x03F5;&lt;/mi&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><span aria-hidden="true">[Math Processing Error]</span><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϵ</mi></math></span></span><script type="math/tex" id="MathJax-Element-7">\epsilon</script>-greedy action learns the value for a less optimal policy but it is a safer policy.</p>
+
+<div class="titled-image">
+<figure class="titled-image">
+    <img src="./Lei Mao&#39;s Log Book – On-Policy VS Off-Policy in Reinforcement Learning_files/cliff-walking.png">
+    <figcaption>Cliff Walking</figcaption>
+</figure>
+</div>
+
+<p>To me, it seems that Q-Learning with <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax_Error" id="MathJax-Element-8-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;&amp;#x03F5;&lt;/mi&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><span aria-hidden="true">[Math Processing Error]</span><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϵ</mi></math></span></span><script type="math/tex" id="MathJax-Element-8">\epsilon</script>-greedy action will be unstable (less likely to converge) during learning in some environments but it is more likely to learn an optimal policy as the overall reward is lower and fluctuation is larger. SARSA, on the other hand, will be more stable during learning but it is less likely to learn an optimal policy.</p>
+
+<div class="titled-image">
+<figure class="titled-image">
+    <img src="./Lei Mao&#39;s Log Book – On-Policy VS Off-Policy in Reinforcement Learning_files/rewards.png">
+    <figcaption>Cliff Walking Rewards</figcaption>
+</figure>
+</div>
+
+<p>According to Sutton, “if <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax_Error" id="MathJax-Element-9-Frame" tabindex="0" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;&amp;#x03F5;&lt;/mi&gt;&lt;/math&gt;" role="presentation" style="position: relative;"><span aria-hidden="true">[Math Processing Error]</span><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ϵ</mi></math></span></span><script type="math/tex" id="MathJax-Element-9">\epsilon</script> were gradually reduced, then both methods would asymptotically converge to the optimal policy.”</p>
+
+<h3 id="final-remarks">Final Remarks</h3>
+
+<p>I actually have not seen any formal definition about on-policy and off-policy from authority publications (Who invented these?). What if I modified Q-Learning algorithm to use absolute greedy policy to behave, is this new algorithm on-policy now?</p>
+
+      <hr>
+      <footer role="contentinfo">
+        <div class="article-author-bottom">
+          
+	<img src="./Lei Mao&#39;s Log Book – On-Policy VS Off-Policy in Reinforcement Learning_files/Lei-Bio-Medium.jpg" class="bio-photo" alt="Lei Mao bio photo">
+
+<h3>Lei Mao</h3>
+<p>Machine Learning, Artificial Intelligence, Computer Science.</p>
+<a href="http://twitter.com/matchaleimao" class="author-social" target="_blank"><i class="fa fa-twitter-square"></i> Twitter</a>
+
+<a href="http://facebook.com/dukeleimao" class="author-social" target="_blank"><i class="fa fa-facebook-square"></i> Facebook</a>
+<a href="http://linkedin.com/in/lei-mao" class="author-social" target="_blank"><i class="fa fa-linkedin-square"></i> LinkedIn</a>
+
+
+<a href="http://github.com/leimao" class="author-social" target="_blank"><i class="fa fa-github-square"></i> GitHub</a>
+<a href="http://scholar.google.com/citations?user=R2VUf7YAAAAJ" class="author-social" target="_blank"><i class="ai ai-google-scholar-square"></i>&nbsp; G. Scholar</a>
+
+
+
+
+
+
+<a href="mailto:dukeleimao@gmail.com" class="author-social" target="_blank"><i class="fa fa-envelope-square"></i> E-Mail</a>
+
+<a href="https://leimao.github.io/feed.xml" class="author-social" target="_blank"><i class="fa fa-rss-square"></i> RSS</a>
+        </div>
+        <p class="byline"><strong>On-Policy VS Off-Policy in Reinforcement Learning</strong> was published on <time datetime="2019-03-14T00:00:00-05:00">March 14, 2019</time> and last modified on <time datetime="2019-03-14">March 14, 2019</time> by <a href="https://leimao.github.io/" title="About Lei Mao">Lei Mao</a>.</p>
+      </footer>
+    </div><!-- /.article-wrap -->
+  
+    <section id="disqus_thread"></section><!-- /#disqus_thread -->
+  
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrap">
+  <footer>
+    <span>© 2020 Lei Mao. Powered by <a href="http://jekyllrb.com/">Jekyll</a> and the <a href="http://mademistakes.com/minimal-mistakes/">Minimal Mistakes</a> Theme.</span>
+
+  </footer>
+</div><!-- /.footer-wrap -->
+
+<script src="./Lei Mao&#39;s Log Book – On-Policy VS Off-Policy in Reinforcement Learning_files/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="https://leimao.github.io/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="./Lei Mao&#39;s Log Book – On-Policy VS Off-Policy in Reinforcement Learning_files/scripts.min.js"></script>
+
+
+<!-- Asynchronous Google Analytics snippet -->
+<!-- Old
+<script>
+  var _gaq = _gaq || [];
+  var pluginUrl = 
+ '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-105680508-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+-->
+<!-- New -->
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-105680508-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+  
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'leimao-github-io'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+	        
+
+
+<div style="position: absolute; width: 0px; height: 0px; overflow: hidden; padding: 0px; border: 0px; margin: 0px;"><div id="MathJax_Font_Test" style="position: absolute; visibility: hidden; top: 0px; left: 0px; width: auto; padding: 0px; border: 0px; margin: 0px; white-space: nowrap; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; font-size: 40px; font-weight: normal; font-style: normal; font-family: STIXSizeOneSym, sans-serif;"></div></div></body></html>
